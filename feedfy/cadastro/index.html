@@ -1,0 +1,53 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0;user-scalable=no">
+    <script src="./script.js"></script>
+    <script src="js/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="./styles/font.css">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Feedfy</title>
+    <script>
+        function next(elem) {
+            if (elem == 4) {
+                window.location.href = 'etapa.html'
+            }
+            $('.card-border').addClass('d-none');
+            $(`#card${elem}`).removeClass('d-none');
+        }
+    </script>
+  </head>
+  <body>
+   
+    <div class="container" style="display: flex; flex-direction: column;
+     align-items: center;">
+        <img style="margin-top: 25vh;" src="images/logo.png" width="80%" alt="">
+      <h3 style="color: #9a03d7; ">Preencha os dados abaixo corretamente</h3>
+      <div class="card-border" id="card1">
+        <div class="e-form__indicators e-form__indicators--type-number_text"><div class="e-form__indicators__indicator e-form__indicators__indicator--state-active"><div class="e-form__indicators__indicator__number e-form__indicators__indicator--shape-circle">1</div><label class="e-form__indicators__indicator__label">Nome</label></div><div class="e-form__indicators__indicator__separator"></div><div class="e-form__indicators__indicator e-form__indicators__indicator--state-inactive"><div class="e-form__indicators__indicator__number e-form__indicators__indicator--shape-circle">2</div><label class="e-form__indicators__indicator__label">Celular</label></div><div class="e-form__indicators__indicator__separator"></div><div class="e-form__indicators__indicator e-form__indicators__indicator--state-inactive"><div class="e-form__indicators__indicator__number e-form__indicators__indicator--shape-circle">3</div><label class="e-form__indicators__indicator__label">Email</label></div></div>
+        <input type="text" placeholder="Digite seu nome">
+        <button class="btn-purple" onclick="next(2)">Próximo</button>
+      </div>
+
+      <div class="card-border d-none" id="card2">
+        <div class="e-form__indicators e-form__indicators--type-number_text"><div class="e-form__indicators__indicator e-form__indicators__indicator--state-inactive"><div class="e-form__indicators__indicator__number e-form__indicators__indicator--shape-circle">1</div><label class="e-form__indicators__indicator__label">Nome</label></div><div class="e-form__indicators__indicator__separator"></div><div class="e-form__indicators__indicator e-form__indicators__indicator--state-active"><div class="e-form__indicators__indicator__number e-form__indicators__indicator--shape-circle">2</div><label class="e-form__indicators__indicator__label">Celular</label></div><div class="e-form__indicators__indicator__separator"></div><div class="e-form__indicators__indicator e-form__indicators__indicator--state-inactive"><div class="e-form__indicators__indicator__number e-form__indicators__indicator--shape-circle">3</div><label class="e-form__indicators__indicator__label">Email</label></div></div>
+        <input type="text" placeholder="Digite seu celular">
+        <div class="d-flex">
+            <button class="btn-purple" onclick="next(1)">Anterior</button>
+            <button class="btn-purple" onclick="next(3)">Próximo</button>
+        </div>
+      </div>
+
+      <div class="card-border d-none" id="card3">
+        <div class="e-form__indicators e-form__indicators--type-number_text"><div class="e-form__indicators__indicator e-form__indicators__indicator--state-inactive"><div class="e-form__indicators__indicator__number e-form__indicators__indicator--shape-circle">1</div><label class="e-form__indicators__indicator__label">Nome</label></div><div class="e-form__indicators__indicator__separator"></div><div class="e-form__indicators__indicator e-form__indicators__indicator--state-inactive"><div class="e-form__indicators__indicator__number e-form__indicators__indicator--shape-circle">2</div><label class="e-form__indicators__indicator__label">Celular</label></div><div class="e-form__indicators__indicator__separator"></div><div class="e-form__indicators__indicator e-form__indicators__indicator--state-active"><div class="e-form__indicators__indicator__number e-form__indicators__indicator--shape-circle">3</div><label class="e-form__indicators__indicator__label">Email</label></div></div>
+        <input type="text" placeholder="Digite seu celular">
+        <div class="d-flex">
+            <button class="btn-purple" onclick="next(2)">Anterior</button>
+            <button class="btn-purple" onclick="next(4)">Próximo</button>
+        </div>
+      </div>
+    </div>
+
+  
+  </body></html>

